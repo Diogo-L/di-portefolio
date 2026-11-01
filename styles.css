@@ -1,9 +1,48 @@
+:root {
+  font-family: Inter, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #e2e8f0;
+  background: #020817;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(139, 92, 246, 0.2), transparent 35%),
+    linear-gradient(180deg, #020817 0%, #0f172a 100%);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
 .portfolio-shell {
   width: min(1200px, calc(100% - 32px));
   margin: 0 auto;
   padding-bottom: 5rem;
 }
 
+.topbar.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
 .topbar {
   position: fixed;
   top: 1rem;
@@ -130,28 +169,95 @@
 }
 
 .typed-line {
+  position: relative;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: 5rem;
   margin: 0.75rem 0 1rem;
+  overflow: visible;
 }
 
 .typed-text {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
   font-size: clamp(2.8rem, 7vw, 6rem);
   line-height: 0.95;
   letter-spacing: -0.06em;
   font-weight: 800;
-  color: #f8fafc;
+  color: transparent;
+  background: linear-gradient(135deg, #f8fafc 0%, #b5c3ff 35%, #8b5cf6 70%, #67e8f9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  clip-path: inset(0 calc(100% - var(--reveal, 0%)) 0 0 round 0.2rem);
+  opacity: 1;
+  transition: clip-path 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: clip-path, opacity;
+}
+
+.typed-text.revealed {
+  clip-path: inset(0 0 0 0 round 0.2rem);
+  opacity: 1;
+}
+
+.typed-text.erasing {
+  transition: clip-path 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.12s ease 1.2s;
+}
+
+.typed-text:not(.revealed):not(.erasing) {
+  opacity: 0;
+}
+
+.typed-text.script-word {
+  font-family: 'Segoe Print', 'Bradley Hand', cursive;
+  font-weight: 700;
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  letter-spacing: 0.04em;
+  transform: rotate(-2deg);
+}
+
+.typed-text.script-word:not(.revealed) {
+  opacity: 0.54;
 }
 
 .cursor {
-  display: inline-block;
-  width: 0.12em;
-  height: 0.9em;
-  background: linear-gradient(180deg, #8b5cf6, #22d3ee);
+  position: absolute;
+  left: 0.46em;
+  top: 50%;
+  transform: translateY(-50%);
+  display: block;
+  width: 0.14em;
+  height: 1.22em;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.95), rgba(103, 232, 249, 0.9));
   border-radius: 999px;
-  animation: blink 0.8s steps(1) infinite;
-  margin-left: 0.18em;
+  box-shadow: 0 0 12px rgba(103, 232, 249, 0.6);
+  opacity: 0;
+  animation: none;
+  transition: left 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.32s ease;
+  z-index: 2;
+}
+
+.cursor.visible {
+  opacity: 1;
+}
+
+.cursor.revealed {
+  left: calc(100% - 0.35em);
+}
+
+.cursor.erasing {
+  opacity: 1;
+}
+
+.cursor.hidden {
+  opacity: 0;
+}
+
+.cursor.script-word {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .hero-summary {

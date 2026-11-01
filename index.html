@@ -2,12 +2,144 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>di-portefolio</title>
+    <meta
+      name="description"
+      content="Portfolio of Diogo Lourenço — software, consulting, and product-focused work."
+    />
+    <title>Diogo Lourenço | Portfolio</title>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div class="portfolio-shell">
+      <header class="topbar hidden" aria-label="Main navigation">
+        <div class="topbar-inner">
+          <nav class="nav">
+            <a href="#about">About me</a>
+            <a href="#projects">Projects</a>
+            <a href="#contact">Contact</a>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+        <section id="home" class="section hero-section">
+          <div class="hero-copy">
+            <p class="eyebrow">Hi, I&apos;m</p>
+
+            <h1 class="typed-line" aria-live="polite">
+              <span class="typed-text" aria-label="Diogo Lourenço">Diogo Lourenço</span>
+              <span class="cursor" aria-hidden="true"></span>
+            </h1>
+
+            <div class="hero-summary">
+              <p>I like to create stuff.</p>
+            </div>
+
+            <div class="cta-row">
+              <a class="primary-button" href="#projects">View projects</a>
+              <a class="secondary-button" href="#contact">Contact me</a>
+            </div>
+          </div>
+        </section>
+
+        <section id="about" class="section content-section">
+          <div class="section-heading">
+            <span class="mini-tag">About me</span>
+            <h2>Building thoughtful interfaces with a strong sense of story.</h2>
+          </div>
+
+          <div class="about-grid">
+            <p>
+              I&apos;m a technology professional with experience in consulting environments and a
+              strong interest in technology, problem-solving, and continuous learning. I&apos;m
+              looking for opportunities to deepen my technical skills and contribute directly
+              to the development and improvement of technology solutions.
+            </p>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <strong>5+</strong>
+                <span>Years in technology and consulting</span>
+              </div>
+              <div class="stat-card">
+                <strong>12</strong>
+                <span>Projects across software, data and automation</span>
+              </div>
+              <div class="stat-card">
+                <strong>100%</strong>
+                <span>Focused on continuous technical growth</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="projects" class="section content-section">
+          <div class="section-heading">
+            <span class="mini-tag">Projects</span>
+            <h2>Selected work and practical experience in technology.</h2>
+          </div>
+
+          <div class="project-grid">
+            <article class="project-card">
+              <div class="project-preview">
+                <span class="project-index">01</span>
+              </div>
+              <h3>Project White</h3>
+              <p>
+                Developed a story-driven first-person shooter (FPS) game using Unity3D as my
+                secondary school final project.
+              </p>
+            </article>
+
+            <article class="project-card">
+              <div class="project-preview">
+                <span class="project-index">02</span>
+              </div>
+              <h3>PTours App</h3>
+              <p>
+                Developed a Google AppSheet low-code application for transfer management,
+                featuring driver assignments, a shared calendar, real-time status tracking,
+                and notifications.
+              </p>
+            </article>
+
+            <article class="project-card">
+              <div class="project-preview">
+                <span class="project-index">03</span>
+              </div>
+              <h3>Tech Consultant</h3>
+              <p>
+                Designed and implemented a CMS using Contentful, defining content types based
+                on Figma designs and supporting mobile app integration.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section id="contact" class="section content-section contact-section">
+          <div class="section-heading">
+            <span class="mini-tag">Contact</span>
+            <h2>Let&apos;s bring an idea to life.</h2>
+          </div>
+
+          <div class="contact-panel">
+            <a href="mailto:diogolourenco2003@gmail.com">diogolourenco2003@gmail.com</a>
+            <a href="https://www.linkedin.com/in/diogolourenco" target="_blank" rel="noreferrer">LinkedIn</a>
+            <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </section>
+      </main>
+
+      <button
+        type="button"
+        class="scroll-top"
+        aria-label="Back to top"
+      >
+        ↑
+      </button>
+    </div>
+
+    <script src="./script.js" type="module"></script>
   </body>
 </html>
