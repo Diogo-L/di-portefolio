@@ -1,8 +1,8 @@
-const words = ['Diogo Lourenço', 'Dí']
+const words = ['Diogo Lourenço']
 let wordIndex = 0
-let isRevealed = false
-let isCursorVisible = false
-let isErasing = false
+let displayedText = ''
+let isDeleting = false
+let typingTimer = null
 
 const typedText = document.querySelector('.typed-text')
 const cursor = document.querySelector('.cursor')
@@ -12,80 +12,47 @@ const scrollTopButton = document.querySelector('.scroll-top')
 
 function updateHero() {
   const currentWord = words[wordIndex]
-  const isScriptWord = currentWord === 'Dí'
 
-  typedText.textContent = currentWord
-  typedText.classList.toggle('script-word', isScriptWord)
-  typedText.classList.toggle('revealed', isRevealed)
-  typedText.classList.toggle('erasing', isErasing)
-  typedText.style.setProperty('--reveal', isRevealed ? '100%' : '0%')
+  typedText.textContent = displayedText
+  typedText.classList.toggle('hidden', displayedText.length === 0)
+  typedText.classList.toggle('revealed', displayedText.length === currentWord.length)
 
-  const shouldCursorBeVisible = isCursorVisible && !isScriptWord
-  cursor.classList.toggle('visible', shouldCursorBeVisible)
-  cursor.classList.toggle('hidden', !shouldCursorBeVisible)
-  cursor.classList.toggle('revealed', isRevealed)
-  cursor.classList.toggle('erasing', isErasing)
-  cursor.classList.toggle('script-word', isScriptWord)
-  cursor.style.setProperty('--reveal', isRevealed ? '100%' : '0%')
+  const textWidth = typedText.scrollWidth || typedText.getBoundingClientRect().width || 0
+  cursor.style.left = `${Math.max(textWidth + 10, 0)}px`
+  cursor.classList.toggle('visible', true)
+  cursor.classList.toggle('hidden', false)
 }
 
 function animateCurrentWord() {
+  clearTimeout(typingTimer)
+
   const currentWord = words[wordIndex]
-  const isScriptWord = currentWord === 'Dí'
 
-  isRevealed = false
-  isCursorVisible = false
-  isErasing = false
-  updateHero()
+  if (isDeleting) {
+    displayedText = currentWord.slice(0, Math.max(0, displayedText.length - 1))
+    updateHero()
 
-  if (isScriptWord) {
-    setTimeout(() => {
-      isRevealed = true
-      updateHero()
-    }, 40)
+    if (displayedText.length > 0) {
+      typingTimer = setTimeout(animateCurrentWord, 55)
+      return
+    }
 
-    setTimeout(() => {
-      isErasing = true
-      updateHero()
-    }, 1100)
-
-    setTimeout(() => {
-      isErasing = false
-      isRevealed = false
-      isCursorVisible = false
-      updateHero()
-    }, 2050)
-
-    setTimeout(() => {
-      wordIndex = (wordIndex + 1) % words.length
-      animateCurrentWord()
-    }, 2600)
-
+    isDeleting = false
+    wordIndex = (wordIndex + 1) % words.length
+    typingTimer = setTimeout(animateCurrentWord, 220)
     return
   }
 
-  setTimeout(() => {
-    isRevealed = true
-    isCursorVisible = true
-    updateHero()
-  }, 80)
+  displayedText = currentWord.slice(0, displayedText.length + 1)
+  updateHero()
 
-  setTimeout(() => {
-    isErasing = true
-    updateHero()
-  }, 1800)
+  if (displayedText.length < currentWord.length) {
+    typingTimer = setTimeout(animateCurrentWord, 90)
+    return
+  }
 
-  setTimeout(() => {
-    isErasing = false
-    isRevealed = false
-    isCursorVisible = false
-    updateHero()
-  }, 2550)
-
-  setTimeout(() => {
-    wordIndex = (wordIndex + 1) % words.length
-    animateCurrentWord()
-  }, 3100)
+  isDeleting = true
+  typingTimer = setTimeout(animateCurrentWord, 1400)
 }
 
 function updateActiveSection() {

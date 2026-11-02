@@ -173,9 +173,10 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 5rem;
+  min-height: 7rem;
   margin: 0.75rem 0 1rem;
   overflow: visible;
+  padding-bottom: 0.35rem;
 }
 
 .typed-text {
@@ -183,47 +184,30 @@ img {
   display: inline-block;
   white-space: nowrap;
   font-size: clamp(2.8rem, 7vw, 6rem);
-  line-height: 0.95;
+  line-height: 1.1;
   letter-spacing: -0.06em;
   font-weight: 800;
+  padding-right: 0.08em;
+  padding-bottom: 0.12em;
   color: transparent;
   background: linear-gradient(135deg, #f8fafc 0%, #b5c3ff 35%, #8b5cf6 70%, #67e8f9 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  clip-path: inset(0 calc(100% - var(--reveal, 0%)) 0 0 round 0.2rem);
   opacity: 1;
-  transition: clip-path 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: clip-path, opacity;
+  transition: opacity 0.2s ease;
 }
 
 .typed-text.revealed {
-  clip-path: inset(0 0 0 0 round 0.2rem);
   opacity: 1;
 }
 
-.typed-text.erasing {
-  transition: clip-path 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.12s ease 1.2s;
-}
-
-.typed-text:not(.revealed):not(.erasing) {
+.typed-text.hidden {
   opacity: 0;
-}
-
-.typed-text.script-word {
-  font-family: 'Segoe Print', 'Bradley Hand', cursive;
-  font-weight: 700;
-  font-size: clamp(3.5rem, 8vw, 7rem);
-  letter-spacing: 0.04em;
-  transform: rotate(-2deg);
-}
-
-.typed-text.script-word:not(.revealed) {
-  opacity: 0.54;
 }
 
 .cursor {
   position: absolute;
-  left: 0.46em;
+  left: 0;
   top: 50%;
   transform: translateY(-50%);
   display: block;
@@ -232,9 +216,8 @@ img {
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.95), rgba(103, 232, 249, 0.9));
   border-radius: 999px;
   box-shadow: 0 0 12px rgba(103, 232, 249, 0.6);
-  opacity: 0;
-  animation: none;
-  transition: left 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.32s ease;
+  opacity: 1;
+  animation: blink 1s steps(1) infinite;
   z-index: 2;
 }
 
@@ -242,22 +225,8 @@ img {
   opacity: 1;
 }
 
-.cursor.revealed {
-  left: calc(100% - 0.35em);
-}
-
-.cursor.erasing {
-  opacity: 1;
-}
-
 .cursor.hidden {
   opacity: 0;
-}
-
-.cursor.script-word {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
 }
 
 .hero-summary {
