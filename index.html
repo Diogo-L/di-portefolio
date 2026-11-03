@@ -77,44 +77,129 @@
         <section id="projects" class="section content-section">
           <div class="section-heading">
             <span class="mini-tag">Projects</span>
-            <h2>Selected work and practical experience in technology.</h2>
+            <h2>Selected work, professional experience, and personal projects.</h2>
           </div>
 
-          <div class="project-grid">
-            <article class="project-card">
-              <div class="project-preview">
-                <span class="project-index">01</span>
-              </div>
-              <h3>Project White</h3>
-              <p>
-                Developed a story-driven first-person shooter (FPS) game using Unity3D as my
-                secondary school final project.
-              </p>
-            </article>
+          <div class="project-toolbar" aria-label="Project filters">
+            <label class="project-search">
+              <span class="visually-hidden">Search projects</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                <path d="m16 16 4.5 4.5"></path>
+              </svg>
+              <input id="project-search" type="search" placeholder="Search..." />
+            </label>
 
-            <article class="project-card">
-              <div class="project-preview">
-                <span class="project-index">02</span>
-              </div>
-              <h3>PTours App</h3>
-              <p>
-                Developed a Google AppSheet low-code application for transfer management,
-                featuring driver assignments, a shared calendar, real-time status tracking,
-                and notifications.
-              </p>
-            </article>
+            <fieldset class="project-filters">
+              <legend class="visually-hidden">Project categories</legend>
+              <label class="category-filter">
+                <input type="checkbox" name="project-category" value="videos" checked />
+                <span class="category-filter-content">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3" y="5" width="13" height="14" rx="2"></rect>
+                    <path d="m16 10 5-3v10l-5-3"></path>
+                  </svg>
+                  Videos
+                </span>
+              </label>
+              <label class="category-filter">
+                <input type="checkbox" name="project-category" value="games" checked />
+                <span class="category-filter-content">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7 8h10a4 4 0 0 1 3.8 5.2l-1 3a2 2 0 0 1-3.3.8L14 14h-4l-2.5 3a2 2 0 0 1-3.3-.8l-1-3A4 4 0 0 1 7 8Z"></path>
+                    <path d="M8 10v4m-2-2h4m6-1h.01M18 13h.01"></path>
+                  </svg>
+                  Games
+                </span>
+              </label>
+              <label class="category-filter">
+                <input type="checkbox" name="project-category" value="apps" checked />
+                <span class="category-filter-content">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="6" y="2.5" width="12" height="19" rx="2"></rect>
+                    <path d="M10 5h4m-3 13h2"></path>
+                  </svg>
+                  Apps
+                </span>
+              </label>
+            </fieldset>
 
-            <article class="project-card">
-              <div class="project-preview">
-                <span class="project-index">03</span>
+            <label class="project-sort">
+              <span class="visually-hidden">Sort projects</span>
+              <select id="project-sort" aria-label="Sort projects">
+                <option value="featured">Featured</option>
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="az">Name: A–Z</option>
+                <option value="za">Name: Z–A</option>
+              </select>
+            </label>
+
+            <details class="project-date-options">
+              <summary aria-label="Show date filters">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                  <path d="M16 3v4M8 3v4M3 10h18"></path>
+                </svg>
+                <span>Date</span>
+              </summary>
+              <div class="project-date-filters">
+                <label>
+                  <span>From</span>
+                  <input id="project-date-from" type="date" aria-label="Start date" />
+                </label>
+                <label>
+                  <span>To</span>
+                  <input id="project-date-to" type="date" aria-label="End date" />
+                </label>
               </div>
-              <h3>Tech Consultant</h3>
-              <p>
-                Designed and implemented a CMS using Contentful, defining content types based
-                on Figma designs and supporting mobile app integration.
-              </p>
-            </article>
+            </details>
           </div>
+
+          <p id="project-results" class="project-results" aria-live="polite"></p>
+          <div id="project-grid" class="project-grid"></div>
+          <p id="project-empty" class="project-empty" hidden>
+            No projects match these filters.
+          </p>
+
+          <dialog id="project-dialog" class="project-dialog" aria-labelledby="dialog-title">
+            <button type="button" class="dialog-close" aria-label="Close project details">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m6 6 12 12M18 6 6 18"></path>
+              </svg>
+            </button>
+            <div class="dialog-art" id="dialog-art"></div>
+            <a
+              id="dialog-video-fallback"
+              class="dialog-video-fallback"
+              target="_blank"
+              rel="noreferrer"
+              hidden
+            >Having trouble playing it? Watch the trailer on YouTube ↗</a>
+            <div class="dialog-content">
+              <img id="dialog-logo" class="dialog-logo" alt="" hidden />
+              <p class="dialog-category" id="dialog-category"></p>
+              <h3 id="dialog-title"></h3>
+              <div class="dialog-tags" id="dialog-tags"></div>
+              <p class="dialog-description" id="dialog-description"></p>
+              <section class="dialog-details" id="dialog-details-section" hidden>
+                <h4>Game details</h4>
+                <div id="dialog-details"></div>
+              </section>
+              <section class="dialog-gallery" id="dialog-gallery-section" hidden>
+                <h4>Screenshots</h4>
+                <div id="dialog-gallery"></div>
+              </section>
+              <section class="dialog-features" id="dialog-features-section">
+                <h4>Project highlights</h4>
+                <ul id="dialog-features"></ul>
+              </section>
+              <section class="dialog-links" id="dialog-links-section" hidden>
+                <h4>Explore the project</h4>
+                <div id="dialog-links"></div>
+              </section>
+            </div>
+          </dialog>
         </section>
 
         <section id="contact" class="section content-section contact-section">
@@ -140,6 +225,6 @@
       </button>
     </div>
 
-    <script src="./script.js" type="module"></script>
+    <script src="./script.js"></script>
   </body>
 </html>
