@@ -1,19 +1,9 @@
-const words = ['Diogo Lourenço']
-let wordIndex = 0
-let displayedText = ''
-let isDeleting = false
-let typingTimer = null
-
-const typedText = document.querySelector('.typed-text')
-const cursor = document.querySelector('.cursor')
 const navLinks = document.querySelectorAll('.nav a')
+const heroTitle = document.querySelector('.hero-title')
 const topbar = document.querySelector('.topbar')
 const scrollTopButton = document.querySelector('.scroll-top')
 const projectGrid = document.querySelector('#project-grid')
 const projectSearch = document.querySelector('#project-search')
-const projectSort = document.querySelector('#project-sort')
-const projectDateFrom = document.querySelector('#project-date-from')
-const projectDateTo = document.querySelector('#project-date-to')
 const projectResults = document.querySelector('#project-results')
 const projectEmpty = document.querySelector('#project-empty')
 const projectDialog = document.querySelector('#project-dialog')
@@ -35,15 +25,9 @@ const projects = [
       'The game includes a prologue, the first chapter, a tutorial, and a time-trial challenge.',
       'The story unfolds as the player faces WHITE Corp’s guards.',
     ],
-    date: null,
     cover: 'white',
     thumbnail: './public/projects/project-white-thumbnail.webp',
     logo: './public/projects/project-white-logo.png',
-    details: [
-      { label: 'Version', value: '1.0.0' },
-      { label: 'Price', value: 'Free' },
-      { label: 'Size', value: '477 MB' },
-    ],
     media: {
       type: 'youtube',
       videoId: 'YVc5H6ly-HI',
@@ -55,36 +39,30 @@ const projects = [
       './public/projects/project-white-screenshot-4.webp',
     ],
     links: [
-      { label: 'Play on Game Jolt', url: 'https://gamejolt.com/games/project-white/631626' },
-      { label: 'Watch the trailer on YouTube', url: 'https://www.youtube.com/watch?v=YVc5H6ly-HI' },
-      { label: 'Official website', url: 'https://diogo-l.github.io/projectwhite/' },
+      { label: 'Get it on GameJolt', icon: 'download', url: 'https://gamejolt.com/games/project-white/631626' },
+      { label: 'Trailer', icon: 'video', url: 'https://www.youtube.com/watch?v=YVc5H6ly-HI' },
+      { label: 'Website', icon: 'website', url: 'https://diogo-l.github.io/projectwhite/' },
     ],
   },
   {
     id: 'forklift-simulator',
     title: 'Forklift Simulator 2021: DL Edition',
     category: 'games',
-    categoryLabel: 'Game · Simulation',
+    categoryLabel: 'Game',
     shortDescription: 'A forklift simulation where players deliver color-coded crates and earn Forkcoins to customize their vehicles.',
     description:
       'Forklift Simulator 2021: DL Edition is a Unity simulation in which the player drives a forklift around a warehouse. Each six-minute round challenges the player to deliver crates to the correct zones: crate colors and rarities determine where each one belongs and how much XP and how many Forkcoins a correct delivery earns. Day and night maps offer different settings, while Forkcoins unlock forklift cosmetics.',
-    technologies: ['Unity', 'Simulation'],
+    technologies: ['Unity3D'],
     features: [
       'The player delivers common crates to any zone and rare crates to their matching color-coded zones.',
       'Six-minute rounds take place on day or night maps.',
       'Correct deliveries earn the player XP and Forkcoins.',
       'Forkcoins unlock cosmetics that the player can equip on the forklift.',
     ],
-    date: null,
     cover: 'forklift',
     thumbnail: './public/projects/forklift-simulator-thumbnail.webp',
-    details: [
-      { label: 'Version', value: '0.1.0' },
-      { label: 'Price', value: 'Free' },
-      { label: 'Size', value: '77 MB' },
-    ],
     links: [
-      { label: 'View and download on Game Jolt', url: 'https://gamejolt.com/games/forkliftsim21dl/608478' },
+      { label: 'Get it on GameJolt', icon: 'download', url: 'https://gamejolt.com/games/forkliftsim21dl/608478' },
     ],
   },
   {
@@ -102,7 +80,6 @@ const projects = [
       'Google Maps navigation to pickup and drop-off locations.',
       'An administrator dashboard with operational notifications and a calendar.',
     ],
-    date: null,
     cover: 'ptours',
     galleryLayout: 'app',
     screenshots: [
@@ -126,6 +103,25 @@ const categoryLabels = {
   videos: 'Videos',
   games: 'Games',
   apps: 'Apps',
+}
+
+function createProjectLinkIcon(iconName) {
+  const iconPaths = {
+    play: 'm8 5 11 7-11 7z',
+    video: 'M15 10l5-3v10l-5-3M4 5h11v14H4z',
+    website: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm-8 9h16M12 3a14 14 0 0 1 0 18m0-18a14 14 0 0 0 0 18',
+    download: 'M12 3v12m-5-5 5 5 5-5M5 17v4h14v-4',
+  }
+  const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+
+  icon.setAttribute('viewBox', '0 0 24 24')
+  icon.setAttribute('aria-hidden', 'true')
+  icon.classList.add('project-link-icon')
+  path.setAttribute('d', iconPaths[iconName])
+  icon.append(path)
+
+  return icon
 }
 
 function createProjectArt(project, large = false) {
@@ -308,8 +304,6 @@ function getVisibleProjects() {
   const selectedCategories = new Set(
     [...document.querySelectorAll('input[name="project-category"]:checked')].map((input) => input.value),
   )
-  const fromDate = projectDateFrom.value
-  const toDate = projectDateTo.value
 
   const visibleProjects = projects.filter((project) => {
     const matchesCategory = selectedCategories.has(project.category)
@@ -323,31 +317,8 @@ function getVisibleProjects() {
       .join(' ')
       .toLocaleLowerCase('en')
     const matchesQuery = searchableText.includes(query)
-    const matchesFromDate = !fromDate || (project.date && project.date >= fromDate)
-    const matchesToDate = !toDate || (project.date && project.date <= toDate)
 
-    return matchesCategory && matchesQuery && matchesFromDate && matchesToDate
-  })
-
-  const featuredOrder = new Map(projects.map((project, index) => [project.id, index]))
-  const sortBy = projectSort.value
-
-  visibleProjects.sort((first, second) => {
-    if (sortBy === 'az' || sortBy === 'za') {
-      const direction = sortBy === 'az' ? 1 : -1
-      return first.title.localeCompare(second.title, 'en') * direction
-    }
-
-    if (sortBy === 'newest' || sortBy === 'oldest') {
-      const direction = sortBy === 'newest' ? -1 : 1
-      if (first.date && second.date) {
-        return first.date.localeCompare(second.date) * direction
-      }
-      if (first.date) return -1
-      if (second.date) return 1
-    }
-
-    return featuredOrder.get(first.id) - featuredOrder.get(second.id)
+    return matchesCategory && matchesQuery
   })
 
   return visibleProjects
@@ -369,8 +340,6 @@ function openProject(project, card) {
   const dialogDescription = document.querySelector('#dialog-description')
   const dialogFeatures = document.querySelector('#dialog-features')
   const dialogLogo = document.querySelector('#dialog-logo')
-  const dialogDetailsSection = document.querySelector('#dialog-details-section')
-  const dialogDetails = document.querySelector('#dialog-details')
   const dialogGallerySection = document.querySelector('#dialog-gallery-section')
   const dialogGallery = document.querySelector('#dialog-gallery')
   const dialogLinksSection = document.querySelector('#dialog-links-section')
@@ -410,21 +379,6 @@ function openProject(project, card) {
     ...project.features.map((feature) => {
       const item = document.createElement('li')
       item.textContent = feature
-      return item
-    }),
-  )
-
-  const details = project.details || []
-  dialogDetailsSection.hidden = details.length === 0
-  dialogDetails.replaceChildren(
-    ...details.map((detail) => {
-      const item = document.createElement('div')
-      item.className = 'dialog-detail'
-      const label = document.createElement('span')
-      label.textContent = detail.label
-      const value = document.createElement('strong')
-      value.textContent = detail.value
-      item.append(label, value)
       return item
     }),
   )
@@ -473,7 +427,7 @@ function openProject(project, card) {
     ...links.map((link) => {
       const anchor = document.createElement('a')
       anchor.href = link.url
-      anchor.textContent = link.label
+      anchor.append(createProjectLinkIcon(link.icon), document.createTextNode(link.label))
       anchor.target = '_blank'
       anchor.rel = 'noreferrer'
       return anchor
@@ -489,51 +443,6 @@ function closeProjectDialog() {
   projectDialog.close()
 }
 
-function updateHero() {
-  const currentWord = words[wordIndex]
-
-  typedText.textContent = displayedText
-  typedText.classList.toggle('hidden', displayedText.length === 0)
-  typedText.classList.toggle('revealed', displayedText.length === currentWord.length)
-
-  const textWidth = typedText.scrollWidth || typedText.getBoundingClientRect().width || 0
-  cursor.style.left = `${Math.max(textWidth + 10, 0)}px`
-  cursor.classList.toggle('visible', true)
-  cursor.classList.toggle('hidden', false)
-}
-
-function animateCurrentWord() {
-  clearTimeout(typingTimer)
-
-  const currentWord = words[wordIndex]
-
-  if (isDeleting) {
-    displayedText = currentWord.slice(0, Math.max(0, displayedText.length - 1))
-    updateHero()
-
-    if (displayedText.length > 0) {
-      typingTimer = setTimeout(animateCurrentWord, 55)
-      return
-    }
-
-    isDeleting = false
-    wordIndex = (wordIndex + 1) % words.length
-    typingTimer = setTimeout(animateCurrentWord, 220)
-    return
-  }
-
-  displayedText = currentWord.slice(0, displayedText.length + 1)
-  updateHero()
-
-  if (displayedText.length < currentWord.length) {
-    typingTimer = setTimeout(animateCurrentWord, 90)
-    return
-  }
-
-  isDeleting = true
-  typingTimer = setTimeout(animateCurrentWord, 1400)
-}
-
 function updateActiveSection() {
   const heroSection = document.getElementById('home')
   const heroBottom = heroSection.offsetTop + heroSection.offsetHeight
@@ -543,7 +452,7 @@ function updateActiveSection() {
   topbar.classList.toggle('hidden', !shouldShowNav)
   scrollTopButton.classList.toggle('visible', shouldShowNav)
 
-  const sections = [...document.querySelectorAll('section[id]')]
+  const sections = [...document.querySelectorAll('main > section[id]')]
   let activeSection = 'about'
 
   sections.forEach((section) => {
@@ -569,6 +478,26 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
+function showHeroName() {
+  heroTitle.classList.remove('hero-title--nickname', 'hero-title--drawing')
+  setTimeout(showHeroNickname, 4800)
+}
+
+function showHeroNickname() {
+  heroTitle.classList.add('hero-title--nickname', 'hero-title--drawing')
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    heroTitle.classList.remove('hero-title--drawing')
+    setTimeout(showHeroName, 3000)
+    return
+  }
+
+  setTimeout(() => {
+    heroTitle.classList.remove('hero-title--drawing')
+    setTimeout(showHeroName, 3000)
+  }, 1950)
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const hash = window.location.hash.replace('#', '')
   const validHashes = ['about', 'projects', 'contact']
@@ -580,18 +509,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  updateHero()
-  animateCurrentWord()
   updateActiveSection()
+  setTimeout(showHeroNickname, 4800)
 
   window.addEventListener('scroll', updateActiveSection)
   window.addEventListener('hashchange', updateActiveSection)
 
   scrollTopButton.addEventListener('click', scrollToTop)
   projectSearch.addEventListener('input', renderProjects)
-  projectSort.addEventListener('change', renderProjects)
-  projectDateFrom.addEventListener('change', renderProjects)
-  projectDateTo.addEventListener('change', renderProjects)
   document.querySelectorAll('input[name="project-category"]').forEach((input) => {
     input.addEventListener('change', renderProjects)
   })

@@ -8,6 +8,12 @@
       content="Portfolio of Diogo Lourenço — software, consulting, and product-focused work."
     />
     <title>Diogo Lourenço | Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -27,9 +33,20 @@
           <div class="hero-copy">
             <p class="eyebrow">Hi, I&apos;m</p>
 
-            <h1 class="typed-line" aria-live="polite">
-              <span class="typed-text" aria-label="Diogo Lourenço">Diogo Lourenço</span>
-              <span class="cursor" aria-hidden="true"></span>
+            <h1 class="hero-title" aria-label="Diogo Lourenço, also known as Dí">
+              <span class="hero-title-name" aria-hidden="true">Diogo Lourenço</span>
+              <span class="hero-title-nickname" aria-hidden="true">
+                <svg class="nickname-signature" viewBox="0 0 220 120">
+                  <defs>
+                    <linearGradient id="nickname-signature-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#b5c3ff"></stop>
+                      <stop offset="55%" stop-color="#8b5cf6"></stop>
+                      <stop offset="100%" stop-color="#67e8f9"></stop>
+                    </linearGradient>
+                  </defs>
+                  <text class="signature-path signature-lettering" pathLength="1" x="63" y="96">Dí</text>
+                </svg>
+              </span>
             </h1>
 
             <div class="hero-summary">
@@ -37,47 +54,80 @@
             </div>
 
             <div class="cta-row">
-              <a class="primary-button" href="#projects">View projects</a>
-              <a class="secondary-button" href="#contact">Contact me</a>
+              <a class="primary-button" href="#projects">
+                <span>Explore my work</span>
+                <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 12h14m-6-6 6 6-6 6"></path>
+                </svg>
+              </a>
+              <a class="secondary-button" href="#about">
+                <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="8" r="3.5"></circle>
+                  <path d="M5 20a7 7 0 0 1 14 0"></path>
+                </svg>
+                <span>Get to know me</span>
+              </a>
             </div>
           </div>
         </section>
 
         <section id="about" class="section content-section">
-          <div class="section-heading">
-            <span class="mini-tag">About me</span>
-            <h2>Building thoughtful interfaces with a strong sense of story.</h2>
-          </div>
+          <div class="about-layout">
+            <div class="about-portrait">
+              <img class="about-portrait-image" src="./public/diogo-profile.jpg" alt="Diogo Lourenço" />
+            </div>
 
-          <div class="about-grid">
-            <p>
-              I&apos;m a technology professional with experience in consulting environments and a
-              strong interest in technology, problem-solving, and continuous learning. I&apos;m
-              looking for opportunities to deepen my technical skills and contribute directly
-              to the development and improvement of technology solutions.
-            </p>
-
-            <div class="stats-grid">
-              <div class="stat-card">
-                <strong>5+</strong>
-                <span>Years in technology and consulting</span>
-              </div>
-              <div class="stat-card">
-                <strong>12</strong>
-                <span>Projects across software, data and automation</span>
-              </div>
-              <div class="stat-card">
-                <strong>100%</strong>
-                <span>Focused on continuous technical growth</span>
-              </div>
+            <div class="about-copy">
+              <h2 class="section-title">
+                <svg class="section-title-icon" viewBox="0 0 24 24" stroke="url(#about-title-gradient)" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="about-title-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="8%" stop-color="#8b5cf6"></stop>
+                      <stop offset="100%" stop-color="#757cf2"></stop>
+                    </linearGradient>
+                  </defs>
+                  <circle cx="12" cy="8" r="3.5"></circle>
+                  <path d="M5 20a7 7 0 0 1 14 0"></path>
+                </svg>
+                <span class="section-title-text">About</span>
+              </h2>
+              <p>
+                I&apos;ve created across both technology and video — building websites, apps,
+                and software, and editing videos. I enjoy finding the right way to turn an
+                idea into something people can use, watch, or experience.
+              </p>
+              <p>
+                I like getting hands-on, solving problems, and learning as I go. Whether I&apos;m
+                developing a game, shaping a video, or exploring a new idea, I love seeing it
+                become something real. Have a look around!
+              </p>
+              <a class="secondary-button about-cta" href="#projects">
+                <span>See my projects</span>
+                <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 12h14m-6-6 6 6-6 6"></path>
+                </svg>
+              </a>
             </div>
           </div>
         </section>
 
         <section id="projects" class="section content-section">
           <div class="section-heading">
-            <span class="mini-tag">Projects</span>
-            <h2>Selected work, professional experience, and personal projects.</h2>
+            <h2 class="section-title">
+              <svg class="section-title-icon" viewBox="0 0 24 24" stroke="url(#projects-title-gradient)" aria-hidden="true">
+                <defs>
+                  <linearGradient id="projects-title-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="8%" stop-color="#8b5cf6"></stop>
+                    <stop offset="100%" stop-color="#757cf2"></stop>
+                  </linearGradient>
+                </defs>
+                <rect x="3.5" y="3.5" width="7" height="7" rx="1.5"></rect>
+                <rect x="13.5" y="3.5" width="7" height="7" rx="1.5"></rect>
+                <rect x="3.5" y="13.5" width="7" height="7" rx="1.5"></rect>
+                <rect x="13.5" y="13.5" width="7" height="7" rx="1.5"></rect>
+              </svg>
+              <span class="section-title-text">Projects</span>
+            </h2>
           </div>
 
           <div class="project-toolbar" aria-label="Project filters">
@@ -123,37 +173,6 @@
                 </span>
               </label>
             </fieldset>
-
-            <label class="project-sort">
-              <span class="visually-hidden">Sort projects</span>
-              <select id="project-sort" aria-label="Sort projects">
-                <option value="featured">Featured</option>
-                <option value="newest">Newest</option>
-                <option value="oldest">Oldest</option>
-                <option value="az">Name: A–Z</option>
-                <option value="za">Name: Z–A</option>
-              </select>
-            </label>
-
-            <details class="project-date-options">
-              <summary aria-label="Show date filters">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <rect x="3" y="5" width="18" height="16" rx="2"></rect>
-                  <path d="M16 3v4M8 3v4M3 10h18"></path>
-                </svg>
-                <span>Date</span>
-              </summary>
-              <div class="project-date-filters">
-                <label>
-                  <span>From</span>
-                  <input id="project-date-from" type="date" aria-label="Start date" />
-                </label>
-                <label>
-                  <span>To</span>
-                  <input id="project-date-to" type="date" aria-label="End date" />
-                </label>
-              </div>
-            </details>
           </div>
 
           <p id="project-results" class="project-results" aria-live="polite"></p>
@@ -182,17 +201,13 @@
               <h3 id="dialog-title"></h3>
               <div class="dialog-tags" id="dialog-tags"></div>
               <p class="dialog-description" id="dialog-description"></p>
-              <section class="dialog-details" id="dialog-details-section" hidden>
-                <h4>Game details</h4>
-                <div id="dialog-details"></div>
+              <section class="dialog-features" id="dialog-features-section">
+                <h4>Project highlights</h4>
+                <ul id="dialog-features"></ul>
               </section>
               <section class="dialog-gallery" id="dialog-gallery-section" hidden>
                 <h4>Screenshots</h4>
                 <div id="dialog-gallery"></div>
-              </section>
-              <section class="dialog-features" id="dialog-features-section">
-                <h4>Project highlights</h4>
-                <ul id="dialog-features"></ul>
               </section>
               <section class="dialog-links" id="dialog-links-section" hidden>
                 <h4>Explore the project</h4>
@@ -204,14 +219,43 @@
 
         <section id="contact" class="section content-section contact-section">
           <div class="section-heading">
-            <span class="mini-tag">Contact</span>
-            <h2>Let&apos;s bring an idea to life.</h2>
+            <h2 class="section-title">
+              <svg class="section-title-icon" viewBox="0 0 24 24" stroke="url(#contact-title-gradient)" aria-hidden="true">
+                <defs>
+                  <linearGradient id="contact-title-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="8%" stop-color="#8b5cf6"></stop>
+                    <stop offset="100%" stop-color="#757cf2"></stop>
+                  </linearGradient>
+                </defs>
+                <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                <path d="m4 7 8 6 8-6"></path>
+              </svg>
+              <span class="section-title-text">Contact</span>
+            </h2>
           </div>
 
           <div class="contact-panel">
-            <a href="mailto:diogolourenco2003@gmail.com">diogolourenco2003@gmail.com</a>
-            <a href="https://www.linkedin.com/in/diogolourenco" target="_blank" rel="noreferrer">LinkedIn</a>
-            <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
+            <div class="contact-links">
+              <a class="contact-card" href="mailto:diogolourenco2003@gmail.com">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                  <path d="m4 7 8 6 8-6"></path>
+                </svg>
+                <span>
+                  <small>Email</small>
+                  <strong>diogolourenco2003@gmail.com</strong>
+                </span>
+              </a>
+              <a class="contact-card" href="https://www.linkedin.com/in/diogolourenco" target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 9v10M5 5v.01M10 19v-6a4 4 0 0 1 8 0v6M10 10v9"></path>
+                </svg>
+                <span>
+                  <small>Find me on</small>
+                  <strong>LinkedIn</strong>
+                </span>
+              </a>
+            </div>
           </div>
         </section>
       </main>
@@ -221,7 +265,9 @@
         class="scroll-top"
         aria-label="Back to top"
       >
-        ↑
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 19V5m-6 6 6-6 6 6"></path>
+        </svg>
       </button>
     </div>
 
