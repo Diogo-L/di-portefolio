@@ -51,11 +51,8 @@ const instagramVideos = [
     postId: 'DXha-uvjFsx',
     title: 'Harmony Within | Video Edit for @elkia.d.a',
     url: 'https://www.instagram.com/p/DXmU00qDBgC/',
-    thumbnailImages: [
-      './public/projects/harmony-within-2.png',
-      './public/projects/harmony-within-3.png',
-    ],
-    thumbnailLayout: 'featured',
+    thumbnailImages: ['./public/projects/harmony-within-3.png'],
+    thumbnailLayout: 'zoom',
   },
   {
     postId: 'DXhfEKPDJfL',
@@ -71,6 +68,20 @@ const instagramVideos = [
     title: 'Wonderbeauty | Video Edit for @elkia.d.a',
     url: 'https://www.instagram.com/p/DXha-uvjFsx/',
     thumbnailImages: ['./public/projects/wonderbeauty.png'],
+  },
+  {
+    postId: 'DQl5ShBjM6a',
+    title: 'Olga Professionelle Massage | Promotional Video',
+    url: 'https://www.instagram.com/p/DQl5ShBjM6a/',
+    thumbnailImages: ['./public/projects/olga-professionelle-massage.png'],
+    thumbnailLayout: 'zoom',
+    thumbnailLogo: './public/projects/olga-professionelle-massage-logo.png',
+    shortDescription: 'An unpaid promotional video showcasing Olga’s massage work.',
+    description: 'An unpaid promotional video edited in DaVinci Resolve to showcase Olga Professionelle Massage and expose Olga’s work.',
+    features: [
+      'Created to showcase Olga’s massage work.',
+      'Video edited in DaVinci Resolve.',
+    ],
   },
 ]
 
@@ -90,7 +101,6 @@ function createYoutubeProject({ title, videoId, format, thumbnail, thumbnailPosi
     features: [
       'Video edited in DaVinci Resolve.',
       ...(isShort ? [] : ['YouTube thumbnail created in Photoshop.']),
-      'More videos are available on my YouTube channel.',
     ],
     cover: 'youtube',
     thumbnail: thumbnail || `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
@@ -105,7 +115,17 @@ function createYoutubeProject({ title, videoId, format, thumbnail, thumbnailPosi
   }
 }
 
-function createInstagramProject({ postId, title, url, thumbnailImages = [], thumbnailLayout }) {
+function createInstagramProject({
+  postId,
+  title,
+  url,
+  thumbnailImages = [],
+  thumbnailLayout,
+  thumbnailLogo,
+  shortDescription,
+  description,
+  features,
+}) {
   const isRnbBeef = postId === 'DXhfEKPDJfL'
 
   return {
@@ -113,19 +133,19 @@ function createInstagramProject({ postId, title, url, thumbnailImages = [], thum
     title,
     category: 'videos',
     categoryLabel: 'Video',
-    shortDescription: 'A black-and-white edit showcasing the photographer/videographer’s signature style.',
-    description: isRnbBeef
+    shortDescription: shortDescription || 'A black-and-white edit showcasing the photographer/videographer’s signature style.',
+    description: description || (isRnbBeef
       ? 'Edited in DaVinci Resolve for photographer/videographer @elkia.d.a, showcasing selected shots captured at R&B Beef in her signature black-and-white style. This portfolio piece highlights her work and is not a paid promotion for the venue.'
-      : 'Edited in DaVinci Resolve to showcase the photographer/videographer’s strongest shots and promote her work. The black-and-white look reinforces the visual identity she wants to convey across her videos.',
+      : 'Edited in DaVinci Resolve to showcase the photographer/videographer’s strongest shots and promote her work. The black-and-white look reinforces the visual identity she wants to convey across her videos.'),
     technologies: ['DaVinci Resolve'],
-    features: [
-      'Black-and-white tones reinforce the photographer/videographer’s visual identity.',
-      'Selected shots showcase her work and promote her services.',
-      ...(postId === 'DXmU00qDBgC' ? ['Promotional video for Wonderbeauty.'] : []),
+    features: features || [
+      'Best clips selected to best showcase the photographer/videographer’s visual identity.',
+      'Video edited in DaVinci Resolve.',
     ],
     cover: 'instagram',
     thumbnailImages,
     thumbnailLayout,
+    thumbnailLogo,
     mediaLink: { label: 'Watch on Instagram', url },
     links: [
       { label: 'Watch on Instagram', icon: 'video', url },
@@ -340,8 +360,9 @@ function createProjectArt(project, large = false) {
   if (project.thumbnailImages?.length) {
     art.classList.add('project-art--photo-showcase')
     if (project.thumbnailLayout) art.classList.add(`project-art--photo-showcase-${project.thumbnailLayout}`)
+    if (project.thumbnailLogo) art.classList.add('project-art--photo-showcase-has-logo')
     art.setAttribute('role', 'img')
-    art.setAttribute('aria-label', `Black-and-white photos from ${project.title}`)
+    art.setAttribute('aria-label', `Photos from ${project.title}`)
 
     project.thumbnailImages.forEach((source) => {
       const image = document.createElement('img')
@@ -351,6 +372,14 @@ function createProjectArt(project, large = false) {
       image.setAttribute('aria-hidden', 'true')
       art.append(image)
     })
+    if (project.thumbnailLogo) {
+      const logo = document.createElement('img')
+      logo.className = 'project-photo-showcase-logo'
+      logo.src = project.thumbnailLogo
+      logo.alt = ''
+      logo.setAttribute('aria-hidden', 'true')
+      art.append(logo)
+    }
     return art
   }
 
