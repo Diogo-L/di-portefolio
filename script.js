@@ -7,7 +7,13 @@ const projectSearch = document.querySelector('#project-search')
 const projectResults = document.querySelector('#project-results')
 const projectEmpty = document.querySelector('#project-empty')
 const projectDialog = document.querySelector('#project-dialog')
+const heroTitleSlot = document.querySelector('.hero-title-slot')
+const aboutSection = document.querySelector('#about')
 let projectReturnFocus = null
+let revealObserver = null
+let heroScrollSequenceEnabled = false
+let heroTitleStartY = 0
+let heroTitleSlotHeight = 0
 
 const youtubeVideos = [
   { title: 'LPS | Valorant Edit (Blueberry Faygo)', videoId: '-5LDWf3BiEQ', format: 'Long-form video' },
@@ -410,6 +416,7 @@ function createProjectCard(project, index) {
   const card = document.createElement('button')
   card.type = 'button'
   card.className = 'project-card'
+  card.dataset.reveal = ''
   card.dataset.projectId = project.id
   card.setAttribute('aria-haspopup', 'dialog')
 
@@ -477,8 +484,43 @@ function getVisibleProjects() {
 function renderProjects() {
   const visibleProjects = getVisibleProjects()
   projectGrid.replaceChildren(...visibleProjects.map(createProjectCard))
+  observeRevealElements(projectGrid)
   projectEmpty.hidden = visibleProjects.length > 0
   projectResults.textContent = `${visibleProjects.length} ${visibleProjects.length === 1 ? 'project found' : 'projects found'}`
+}
+
+function observeRevealElements(root) {
+  if (!revealObserver) return
+
+  if (root.matches?.('[data-reveal]')) {
+    revealObserver.observe(root)
+  }
+
+  root.querySelectorAll('[data-reveal]').forEach((element) => revealObserver.observe(element))
+}
+
+function initializeScrollReveals() {
+  if (
+    !('IntersectionObserver' in window) ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
+    return
+  }
+
+  revealObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed')
+          observer.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.12, rootMargin: '0px 0px -32px 0px' },
+  )
+
+  document.body.classList.add('reveal-ready')
+  observeRevealElements(document)
 }
 
 function openProject(project, card) {
@@ -595,8 +637,10 @@ function closeProjectDialog() {
 
 function updateActiveSection() {
   const heroSection = document.getElementById('home')
-  const heroBottom = heroSection.offsetTop + heroSection.offsetHeight
-  const shouldShowNav = window.scrollY > heroBottom * 0.3
+  const heroProgress = updateHeroScrollSequence()
+  const shouldShowNav = heroScrollSequenceEnabled
+    ? heroProgress >= 0.72
+    : window.scrollY > heroSection.offsetTop + heroSection.offsetHeight * 0.3
 
   topbar.classList.toggle('visible', shouldShowNav)
   topbar.classList.toggle('hidden', !shouldShowNav)
@@ -624,8 +668,92 @@ function updateActiveSection() {
   })
 }
 
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+function updateHeroScrollSequence() {
+  if (!heroScrollSequenceEnabled) return 0
+
+  const heroSection = document.getElementById('home')
+  const scrollDistance = Math.max(1, heroSection.offsetHeight - window.innerHeight)
+  const progress = Math.min(1, Math.max(0, (window.scrollY - heroSection.offsetTop) / scrollDistance))
+  const maxScale = 3.4
+  const aboutBackgroundY = aboutSection.offsetHeight * 0.32
+
+  if (progress === 0 && heroTitle.parentElement === heroTitleSlot) {
+    captureHeroTitlePosition()
+  }
+
+  if (window.scrollY > 0 && document.body.classList.contains('hero-intro-ready')) {
+    finishHeroEntrance()
+  }
+
+  heroTitle.style.setProperty('--hero-scale', 1 + (maxScale - 1) * progress)
+  heroTitle.style.setProperty('--hero-title-opacity', 1 - progress * 0.95)
+  heroSection.style.setProperty('--hero-progress', progress)
+  heroTitle.style.setProperty('--hero-progress', progress)
+  heroTitle.style.setProperty('--hero-title-x', `${document.documentElement.clientWidth / 2}px`)
+  heroTitle.style.setProperty('--hero-title-y', `${heroTitleStartY}px`)
+  heroTitle.style.setProperty(
+    '--hero-rise',
+    `${(heroTitleStartY - aboutSection.getBoundingClientRect().top - aboutBackgroundY) * progress}px`,
+  )
+
+  if (progress === 1) {
+    heroTitle.classList.remove('hero-title--pinned')
+    heroTitle.classList.add('hero-title--background')
+  } else {
+    heroTitle.classList.remove('hero-title--background')
+    heroTitle.classList.toggle('hero-title--pinned', progress > 0)
+    heroTitleSlot.style.minHeight = progress > 0 ? `${heroTitleSlotHeight}px` : ''
+  }
+
+  if (progress > 0) {
+    heroTitle.classList.remove('hero-title--nickname', 'hero-title--drawing')
+  }
+
+  return progress
+}
+
+function initializeHeroScrollSequence() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+  heroScrollSequenceEnabled = true
+  document.body.classList.add('scroll-sequence-ready')
+  captureHeroTitlePosition()
+}
+
+function initializeHeroEntrance() {
+  if (
+    window.scrollY > 0 ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
+    document.body.classList.add('hero-intro-complete')
+    return
+  }
+
+  document.body.classList.add('hero-intro-ready')
+  document.querySelector('.cta-row').addEventListener('animationend', (event) => {
+    if (event.target === event.currentTarget && event.animationName === 'hero-copy-enter') {
+      finishHeroEntrance()
+    }
+  })
+}
+
+function finishHeroEntrance() {
+  document.body.classList.remove('hero-intro-ready')
+  document.body.classList.add('hero-intro-complete')
+}
+
+function captureHeroTitlePosition() {
+  const slot = heroTitleSlot.getBoundingClientRect()
+  const titleStyles = getComputedStyle(heroTitle)
+  heroTitleStartY = slot.top + slot.height / 2
+  heroTitleSlotHeight = slot.height
+  heroTitle.style.setProperty('--hero-title-x', `${document.documentElement.clientWidth / 2}px`)
+  heroTitle.style.setProperty('--hero-title-y', `${heroTitleStartY}px`)
+  heroTitle.style.setProperty('--hero-rise', '0px')
+  heroTitle.style.setProperty(
+    '--hero-slot-height',
+    `${heroTitle.offsetHeight + parseFloat(titleStyles.marginTop) + parseFloat(titleStyles.marginBottom)}px`,
+  )
 }
 
 function showHeroName() {
@@ -634,6 +762,11 @@ function showHeroName() {
 }
 
 function showHeroNickname() {
+  if (heroScrollSequenceEnabled && window.scrollY > 0) {
+    setTimeout(showHeroNickname, 3000)
+    return
+  }
+
   heroTitle.classList.add('hero-title--nickname', 'hero-title--drawing')
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -648,7 +781,14 @@ function showHeroNickname() {
   }, 1950)
 }
 
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  initializeHeroScrollSequence()
+  initializeScrollReveals()
+
   const hash = window.location.hash.replace('#', '')
   const validHashes = ['about', 'projects', 'contact']
 
@@ -659,10 +799,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  initializeHeroEntrance()
   updateActiveSection()
   setTimeout(showHeroNickname, 4800)
 
   window.addEventListener('scroll', updateActiveSection)
+  window.addEventListener('resize', updateActiveSection)
   window.addEventListener('hashchange', updateActiveSection)
 
   scrollTopButton.addEventListener('click', scrollToTop)
