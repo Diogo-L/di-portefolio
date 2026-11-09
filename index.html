@@ -217,6 +217,25 @@
               </section>
             </div>
           </dialog>
+          <dialog id="image-viewer" class="image-viewer" aria-label="Image preview">
+            <button type="button" class="image-viewer-nav image-viewer-previous" aria-label="Previous image" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+            </button>
+            <button type="button" class="dialog-close image-viewer-close" aria-label="Close image preview">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m6 6 12 12M18 6 6 18"></path>
+              </svg>
+            </button>
+            <img id="image-viewer-image" alt="" />
+            <button type="button" class="image-viewer-nav image-viewer-next" aria-label="Next image" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m9 18 6-6-6-6"></path>
+              </svg>
+            </button>
+            <span id="image-viewer-counter" class="image-viewer-counter" aria-live="polite"></span>
+          </dialog>
         </section>
 
         <section id="contact" class="section content-section contact-section">

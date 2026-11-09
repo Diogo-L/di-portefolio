@@ -7,9 +7,17 @@ const projectSearch = document.querySelector('#project-search')
 const projectResults = document.querySelector('#project-results')
 const projectEmpty = document.querySelector('#project-empty')
 const projectDialog = document.querySelector('#project-dialog')
+const imageViewer = document.querySelector('#image-viewer')
+const imageViewerImage = document.querySelector('#image-viewer-image')
+const imageViewerPrevious = document.querySelector('.image-viewer-previous')
+const imageViewerNext = document.querySelector('.image-viewer-next')
+const imageViewerCounter = document.querySelector('#image-viewer-counter')
 const heroTitleSlot = document.querySelector('.hero-title-slot')
 const aboutSection = document.querySelector('#about')
 let projectReturnFocus = null
+let imageViewerReturnFocus = null
+let imageViewerItems = []
+let imageViewerIndex = 0
 let revealObserver = null
 let heroScrollSequenceEnabled = false
 let heroTitleStartY = 0
@@ -608,6 +616,12 @@ function openProject(project, card) {
   )
 
   const screenshots = project.screenshots || []
+  imageViewerItems = screenshots.map((screenshot, index) => ({
+    src: typeof screenshot === 'string' ? screenshot : screenshot.src,
+    alt: typeof screenshot === 'string'
+      ? `Screenshot ${index + 1} of ${project.title}`
+      : screenshot.alt,
+  }))
   dialogGallerySection.hidden = screenshots.length === 0
   dialogGallery.classList.toggle('dialog-gallery--app', project.galleryLayout === 'app')
   dialogGallery.replaceChildren(
@@ -619,9 +633,18 @@ function openProject(project, card) {
 
       const link = document.createElement('a')
       link.href = source
-      link.target = '_blank'
-      link.rel = 'noreferrer'
-      link.setAttribute('aria-label', `Open ${alt}`)
+      link.setAttribute('aria-label', `View ${alt}`)
+      link.addEventListener('click', (event) => {
+        event.preventDefault()
+        showImageViewerImage(index)
+        const hasMultipleImages = imageViewerItems.length > 1
+        imageViewerPrevious.hidden = !hasMultipleImages
+        imageViewerNext.hidden = !hasMultipleImages
+        imageViewerCounter.hidden = !hasMultipleImages
+        imageViewerReturnFocus = link
+        imageViewer.showModal()
+        imageViewer.querySelector('.image-viewer-close').focus()
+      })
       if (typeof screenshot !== 'string' && screenshot.layout) {
         link.classList.add(`dialog-gallery-image--${screenshot.layout}`)
       }
@@ -665,6 +688,14 @@ function openProject(project, card) {
 
 function closeProjectDialog() {
   projectDialog.close()
+}
+
+function showImageViewerImage(index) {
+  imageViewerIndex = (index + imageViewerItems.length) % imageViewerItems.length
+  const image = imageViewerItems[imageViewerIndex]
+  imageViewerImage.src = image.src
+  imageViewerImage.alt = image.alt
+  imageViewerCounter.textContent = `${imageViewerIndex + 1} / ${imageViewerItems.length}`
 }
 
 function updateActiveSection() {
@@ -856,11 +887,35 @@ document.addEventListener('DOMContentLoaded', () => {
     event.preventDefault()
     closeProjectDialog()
   })
-  projectDialog.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
+  imageViewer.querySelector('.image-viewer-close').addEventListener('click', () => imageViewer.close())
+  imageViewerPrevious.addEventListener('click', () => showImageViewerImage(imageViewerIndex - 1))
+  imageViewerNext.addEventListener('click', () => showImageViewerImage(imageViewerIndex + 1))
+  imageViewer.addEventListener('click', (event) => {
+    if (event.target === imageViewer) imageViewer.close()
+  })
+  imageViewer.addEventListener('close', () => {
+    imageViewerReturnFocus?.focus()
+    imageViewerReturnFocus = null
+    imageViewerItems = []
+  })
+  document.addEventListener('keydown', (event) => {
+    if (imageViewer.open) {
+      if (event.key === 'ArrowLeft' && imageViewerItems.length > 1) {
+        event.preventDefault()
+        showImageViewerImage(imageViewerIndex - 1)
+      } else if (event.key === 'ArrowRight' && imageViewerItems.length > 1) {
+        event.preventDefault()
+        showImageViewerImage(imageViewerIndex + 1)
+      } else if (event.key === 'Escape') {
+        event.preventDefault()
+        event.stopPropagation()
+        imageViewer.close()
+      }
+    } else if (event.key === 'Escape' && projectDialog.open) {
       event.preventDefault()
+      event.stopPropagation()
       closeProjectDialog()
     }
-  })
+  }, true)
   renderProjects()
 })
