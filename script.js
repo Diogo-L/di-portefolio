@@ -50,7 +50,7 @@ const instagramVideos = [
   {
     postId: 'DXha-uvjFsx',
     title: 'Harmony Within | Video Edit for @elkia.d.a',
-    url: 'https://www.instagram.com/p/DXha-uvjFsx/',
+    url: 'https://www.instagram.com/p/DXmU00qDBgC/',
     thumbnailImages: [
       './public/projects/harmony-within-2.png',
       './public/projects/harmony-within-3.png',
@@ -69,7 +69,7 @@ const instagramVideos = [
   {
     postId: 'DXmU00qDBgC',
     title: 'Wonderbeauty | Video Edit for @elkia.d.a',
-    url: 'https://www.instagram.com/p/DXmU00qDBgC/',
+    url: 'https://www.instagram.com/p/DXha-uvjFsx/',
     thumbnailImages: ['./public/projects/wonderbeauty.png'],
   },
 ]
@@ -126,6 +126,7 @@ function createInstagramProject({ postId, title, url, thumbnailImages = [], thum
     cover: 'instagram',
     thumbnailImages,
     thumbnailLayout,
+    mediaLink: { label: 'Watch on Instagram', url },
     links: [
       { label: 'Watch on Instagram', icon: 'video', url },
     ],
@@ -444,7 +445,6 @@ function createProjectCard(project, index) {
     tag.textContent = technology
     tags.append(tag)
   })
-
   const indexLabel = document.createElement('span')
   indexLabel.className = 'project-card-index'
   indexLabel.textContent = String(index + 1).padStart(2, '0')
@@ -539,12 +539,15 @@ function openProject(project, card) {
 
   dialogArt.replaceChildren(createProjectArt(project, true))
   const youtubeVideoId = project.media?.type === 'youtube' ? project.media.videoId : null
-  dialogVideoFallback.hidden = !youtubeVideoId
-  if (youtubeVideoId) {
-    dialogVideoFallback.href = `https://www.youtube.com/watch?v=${encodeURIComponent(youtubeVideoId)}`
-    dialogVideoFallback.textContent = window.location.protocol === 'file:'
-      ? 'Watch on YouTube ↗'
-      : 'Having trouble playing it? Watch on YouTube ↗'
+  const mediaLink = project.mediaLink || (youtubeVideoId
+    ? { label: 'Watch on YouTube', url: `https://www.youtube.com/watch?v=${encodeURIComponent(youtubeVideoId)}` }
+    : null)
+  dialogVideoFallback.hidden = !mediaLink
+  if (mediaLink) {
+    dialogVideoFallback.href = mediaLink.url
+    dialogVideoFallback.textContent = youtubeVideoId && window.location.protocol !== 'file:'
+      ? 'Having trouble playing it? Watch on YouTube ↗'
+      : `${mediaLink.label} ↗`
   } else {
     dialogVideoFallback.removeAttribute('href')
   }
