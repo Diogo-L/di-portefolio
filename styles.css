@@ -667,7 +667,8 @@ img {
 
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 100%;
   gap: 1.2rem;
 }
 
@@ -703,7 +704,8 @@ img {
 .project-art {
   position: relative;
   display: flex;
-  min-height: 12rem;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
@@ -744,8 +746,6 @@ img {
 }
 
 .project-art--ptours {
-  height: 12rem;
-  min-height: 12rem;
   flex-direction: row;
   align-items: center;
   justify-content: center;
@@ -818,6 +818,58 @@ img {
 
 .project-art--contentful {
   background: radial-gradient(circle at 75% 35%, rgba(244, 114, 182, 0.4), transparent 25%), linear-gradient(135deg, #512b55, #111827 72%);
+}
+
+.project-art--photo-showcase {
+  flex-direction: row;
+  gap: 0;
+  padding: 0;
+}
+
+.project-art--photo-showcase::before,
+.project-art--photo-showcase::after {
+  display: none;
+}
+
+.project-photo-showcase-image {
+  width: 50%;
+  min-width: 0;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.project-photo-showcase-image:only-child {
+  width: 100%;
+}
+
+.project-art--photo-showcase-featured {
+  display: block;
+}
+
+.project-art--photo-showcase-featured .project-photo-showcase-image:first-child {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project-art--photo-showcase-featured .project-photo-showcase-image:nth-child(2) {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  width: 34%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border: 2px solid rgba(248, 250, 252, 0.9);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.45);
+  object-fit: cover;
+}
+
+.project-art--instagram {
+  background: radial-gradient(circle at 75% 35%, rgba(244, 114, 182, 0.42), transparent 28%), linear-gradient(135deg, #7c2d5b, #312047 72%);
 }
 
 .project-art--forklift {
@@ -1071,7 +1123,28 @@ img {
 }
 
 .dialog-art .project-art--ptours {
-  height: clamp(13rem, 38vw, 22rem);
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+  gap: 5%;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0;
+  background: #f1f5f9;
+}
+
+.dialog-art .project-art--ptours .prtours-devices {
+  height: 100%;
+}
+
+.dialog-art .project-art--ptours .prtours-showcase-logo {
+  max-height: 22%;
+}
+
+.dialog-art .project-art--photo-showcase {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+  padding: 0;
 }
 
 .dialog-video-fallback {
@@ -1391,6 +1464,10 @@ img {
 }
 
 @media (max-width: 900px) {
+  .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .about-layout {
     grid-template-columns: 1fr;
     gap: 2.5rem;
@@ -1408,6 +1485,10 @@ img {
 }
 
 @media (max-width: 640px) {
+  .project-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .portfolio-shell {
     width: min(100% - 20px, 1200px);
   }

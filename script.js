@@ -9,6 +9,123 @@ const projectEmpty = document.querySelector('#project-empty')
 const projectDialog = document.querySelector('#project-dialog')
 let projectReturnFocus = null
 
+const youtubeVideos = [
+  { title: 'LPS | Valorant Edit (Blueberry Faygo)', videoId: '-5LDWf3BiEQ', format: 'Long-form video' },
+  { title: 'KILLER | Assetto Corsa Cinematic', videoId: 'y7WqDCad2dM', format: 'Long-form video' },
+  { title: 'SAD HOURS | Assetto Corsa Cinematic', videoId: 'PA9iLiOIDzk', format: 'Long-form video' },
+  {
+    title: 'Initial D-Inspired Drift',
+    videoId: 'SYDuI7KCmms',
+    format: 'YouTube Short',
+    thumbnail: './public/projects/initial-d-drift.png',
+  },
+  {
+    title: 'English or Spanish? | Assetto Corsa Drift',
+    videoId: 'vB22K4LngU8',
+    format: 'YouTube Short',
+    thumbnail: './public/projects/english-or-spanish-drift.png',
+    thumbnailPosition: 'center 80%',
+  },
+  {
+    title: 'Nissan GT-R R34: High-Speed Traffic Run',
+    videoId: 'YODfqGlojLs',
+    format: 'YouTube Short',
+    thumbnail: './public/projects/nissan-gtr-r34.png',
+  },
+  {
+    title: 'Nissan S14 Drift | 1,000 HP POV',
+    videoId: 'MobX6BsAg8k',
+    format: 'YouTube Short',
+    thumbnail: './public/projects/nissan-s14-drift.png',
+  },
+]
+
+const instagramVideos = [
+  {
+    postId: 'DXha-uvjFsx',
+    title: 'Harmony Within | Video Edit for @elkia.d.a',
+    url: 'https://www.instagram.com/p/DXha-uvjFsx/',
+    thumbnailImages: [
+      './public/projects/harmony-within-2.png',
+      './public/projects/harmony-within-3.png',
+    ],
+    thumbnailLayout: 'featured',
+  },
+  {
+    postId: 'DXhfEKPDJfL',
+    title: 'R&B Beef | Video Edit for @elkia.d.a',
+    url: 'https://www.instagram.com/p/DXhfEKPDJfL/',
+    thumbnailImages: [
+      './public/projects/rnb-beef-award.jpg',
+      './public/projects/rnb-beef-food.jpg',
+    ],
+  },
+  {
+    postId: 'DXmU00qDBgC',
+    title: 'Wonderbeauty | Video Edit for @elkia.d.a',
+    url: 'https://www.instagram.com/p/DXmU00qDBgC/',
+    thumbnailImages: ['./public/projects/wonderbeauty.png'],
+  },
+]
+
+function createYoutubeProject({ title, videoId, format, thumbnail, thumbnailPosition }) {
+  const isShort = format === 'YouTube Short'
+
+  return {
+    id: `youtube-${videoId}`,
+    title,
+    category: 'videos',
+    categoryLabel: 'Video',
+    shortDescription: isShort ? 'Assetto Corsa · YouTube Short' : `${format} · DaVinci Resolve`,
+    description: isShort
+      ? 'An Assetto Corsa short edited in DaVinci Resolve.'
+      : `${format} published on YouTube. Edited in DaVinci Resolve, with the thumbnail created in Photoshop.`,
+    technologies: isShort ? ['DaVinci Resolve'] : ['DaVinci Resolve', 'Photoshop'],
+    features: [
+      'Video edited in DaVinci Resolve.',
+      ...(isShort ? [] : ['YouTube thumbnail created in Photoshop.']),
+      'More videos are available on my YouTube channel.',
+    ],
+    cover: 'youtube',
+    thumbnail: thumbnail || `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+    thumbnailFallback: thumbnail ? null : `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+    largeThumbnail: isShort ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : null,
+    thumbnailPosition,
+    media: { type: 'youtube', videoId },
+    links: [
+      { label: 'Watch on YouTube', icon: 'video', url: `https://www.youtube.com/watch?v=${videoId}` },
+      { label: 'More videos on my channel', icon: 'video', url: 'https://www.youtube.com/@imDIEGOOyt' },
+    ],
+  }
+}
+
+function createInstagramProject({ postId, title, url, thumbnailImages = [], thumbnailLayout }) {
+  const isRnbBeef = postId === 'DXhfEKPDJfL'
+
+  return {
+    id: `instagram-${postId}`,
+    title,
+    category: 'videos',
+    categoryLabel: 'Video',
+    shortDescription: 'A black-and-white edit showcasing the photographer/videographer’s signature style.',
+    description: isRnbBeef
+      ? 'Edited in DaVinci Resolve for photographer/videographer @elkia.d.a, showcasing selected shots captured at R&B Beef in her signature black-and-white style. This portfolio piece highlights her work and is not a paid promotion for the venue.'
+      : 'Edited in DaVinci Resolve to showcase the photographer/videographer’s strongest shots and promote her work. The black-and-white look reinforces the visual identity she wants to convey across her videos.',
+    technologies: ['DaVinci Resolve'],
+    features: [
+      'Black-and-white tones reinforce the photographer/videographer’s visual identity.',
+      'Selected shots showcase her work and promote her services.',
+      ...(postId === 'DXmU00qDBgC' ? ['Promotional video for Wonderbeauty.'] : []),
+    ],
+    cover: 'instagram',
+    thumbnailImages,
+    thumbnailLayout,
+    links: [
+      { label: 'Watch on Instagram', icon: 'video', url },
+    ],
+  }
+}
+
 const projects = [
   {
     id: 'project-white',
@@ -97,6 +214,8 @@ const projects = [
       },
     ],
   },
+  ...youtubeVideos.map(createYoutubeProject),
+  ...instagramVideos.map(createInstagramProject),
 ]
 
 const categoryLabels = {
@@ -132,8 +251,15 @@ function createProjectArt(project, large = false) {
     if (window.location.protocol === 'file:') {
       const thumbnail = document.createElement('img')
       thumbnail.className = 'project-media'
-      thumbnail.src = project.thumbnail
-      thumbnail.alt = `Cover image for ${project.title}; use the link below to watch the trailer on YouTube`
+      thumbnail.src = project.largeThumbnail || project.thumbnail
+      thumbnail.alt = `Cover image for ${project.title}; use the link below to watch it on YouTube`
+      if (project.largeThumbnail) {
+        thumbnail.addEventListener('error', () => {
+          thumbnail.src = project.thumbnail
+        }, { once: true })
+      } else if (project.thumbnailPosition) {
+        thumbnail.style.objectPosition = project.thumbnailPosition
+      }
       art.append(thumbnail)
       return art
     }
@@ -141,7 +267,7 @@ function createProjectArt(project, large = false) {
     const player = document.createElement('iframe')
     player.className = 'project-media'
     player.src = `https://www.youtube.com/embed/${encodeURIComponent(project.media.videoId)}?rel=0&playsinline=1`
-    player.title = `${project.title} trailer on YouTube`
+    player.title = `${project.title} on YouTube`
     player.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
     player.allowFullscreen = true
     player.referrerPolicy = 'origin'
@@ -193,7 +319,31 @@ function createProjectArt(project, large = false) {
     image.className = 'project-media'
     image.src = project.thumbnail || project.media.src
     image.alt = project.media?.alt || `Image of ${project.title}`
+    if (project.thumbnailPosition) image.style.objectPosition = project.thumbnailPosition
+    if (project.thumbnailFallback) {
+      image.addEventListener('error', () => {
+        image.removeAttribute('srcset')
+        image.src = project.thumbnailFallback
+      }, { once: true })
+    }
     art.append(image)
+    return art
+  }
+
+  if (project.thumbnailImages?.length) {
+    art.classList.add('project-art--photo-showcase')
+    if (project.thumbnailLayout) art.classList.add(`project-art--photo-showcase-${project.thumbnailLayout}`)
+    art.setAttribute('role', 'img')
+    art.setAttribute('aria-label', `Black-and-white photos from ${project.title}`)
+
+    project.thumbnailImages.forEach((source) => {
+      const image = document.createElement('img')
+      image.className = 'project-photo-showcase-image'
+      image.src = source
+      image.alt = ''
+      image.setAttribute('aria-hidden', 'true')
+      art.append(image)
+    })
     return art
   }
 
@@ -246,7 +396,7 @@ function createProjectArt(project, large = false) {
 
   const mark = document.createElement('span')
   mark.className = 'project-art-mark'
-  mark.textContent = project.cover === 'ptours' ? 'PT' : 'CMS'
+  mark.textContent = project.cover === 'ptours' ? 'PT' : project.cover === 'instagram' ? 'IG' : 'CMS'
 
   const caption = document.createElement('span')
   caption.className = 'project-art-caption'
@@ -351,8 +501,8 @@ function openProject(project, card) {
   if (youtubeVideoId) {
     dialogVideoFallback.href = `https://www.youtube.com/watch?v=${encodeURIComponent(youtubeVideoId)}`
     dialogVideoFallback.textContent = window.location.protocol === 'file:'
-      ? 'Watch the trailer on YouTube ↗'
-      : 'Having trouble playing it? Watch the trailer on YouTube ↗'
+      ? 'Watch on YouTube ↗'
+      : 'Having trouble playing it? Watch on YouTube ↗'
   } else {
     dialogVideoFallback.removeAttribute('href')
   }
